@@ -49,7 +49,7 @@ ${product.reviews
 
   try {
     const { text } = await generateText({
-      model: anthropic("claude-sonnet-4-20250514"),
+      model: anthropic("claude-sonnet-4-5-20250929"),
       prompt,
       maxTokens: 1000,
       temperature: 0.75,
