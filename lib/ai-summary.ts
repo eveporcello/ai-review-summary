@@ -1,19 +1,13 @@
 import { cacheTag, cacheLife } from "next/cache";
 import { generateText } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
+import { anthropic } from "@ai-sdk/anthropic";
 import { Product } from "./types";
 
-if (!process.env.PERPLEXITY_API_KEY) {
+if (!process.env.ANTHROPIC_API_KEY) {
   throw new Error(
-    "PERPLEXITY_API_KEY environment variable is required. You can get this via https://vercel.com/docs/integrations/ai"
+    "ANTHROPIC_API_KEY environment variable is required. You can get this via https://vercel.com/docs/integrations/ai"
   );
 }
-
-// AI SDK 5: Use createOpenAI with custom baseURL for Perplexity
-const perplexity = createOpenAI({
-  apiKey: process.env.PERPLEXITY_API_KEY,
-  baseURL: "https://api.perplexity.ai",
-});
 
 export async function summarizeReviews(product: Product) {
   "use cache";
@@ -54,14 +48,11 @@ ${product.reviews
     .join("\n\n")}`;
 
   try {
-    // AI SDK 5: Use generateText instead of OpenAIStream + StreamingTextResponse
     const { text } = await generateText({
-      model: perplexity("llama-3.1-sonar-small-128k-online"),
+      model: anthropic("claude-sonnet-4-20250514"),
       prompt,
       maxTokens: 1000,
       temperature: 0.75,
-      topP: 1,
-      frequencyPenalty: 1,
     });
 
     // Clean up the response
